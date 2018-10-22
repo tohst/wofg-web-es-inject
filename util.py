@@ -18,9 +18,15 @@ def populate_duplicate_docs(hits):
         doc_hashvals.setdefault(hashval, []).append(_id)
 
 
+def process_hits(hits):
+    for item in hits:
+        print(item)
+
+
 def scroll_all_docs(es, index):
     '''Loop through all docs in index, populating the duplicate doc dictionary as you go'''
     # Make initial search request (match all)
+    
     data = es.search(index=index, scroll='1m',  body={"query": {"match_all": {}}})
     sid = data['_scroll_id']
     scroll_size = len(data['hits']['hits'])
@@ -31,6 +37,26 @@ def scroll_all_docs(es, index):
         data = es.scroll(scroll_id=sid, scroll='2m')
         # Process current batch of hits
         populate_duplicate_docs(data['hits']['hits'])
+        # Update the scroll ID
+        sid = data['_scroll_id']
+        # Get the number of results that returned in the last scroll
+        scroll_size = len(data['hits']['hits'])
+
+
+def scroll_domains_docs(es, index, domain):
+    '''Loop through all docs in index, populating the duplicate doc dictionary as you go'''
+    # Make initial search request
+    body = {"query": {"term":{"ga:hostname":"abr.gov.au"}}}
+    data = es.search(index=index, scroll='1m',  body=body)
+    sid = data['_scroll_id']
+    scroll_size = len(data['hits']['hits'])
+    print('Scroll Size: ' +str(scroll_size))
+    # Before scroll, process current batch of hits
+    process_hits(data['hits']['hits'])
+    while scroll_size > 0:
+        data = es.scroll(scroll_id=sid, scroll='2m')
+        # Process current batch of hits
+        process_hits(data['hits']['hits'])
         # Update the scroll ID
         sid = data['_scroll_id']
         # Get the number of results that returned in the last scroll
@@ -57,7 +83,7 @@ def remove_duplicates(es, index, doc_type='_doc',):
 if __name__ == '__main__':
     # Basic config options
     opts = {
-        'index':'testv1',
+        'index':'gatest',
     }
     # Connection options
     con_opts = {
@@ -70,6 +96,6 @@ if __name__ == '__main__':
     # Create connection client to ES
     es_client = connect(con_opts)
     # scroll through index
-    scroll_all_docs(es_client, opts['index'])
-    # highlander all hashvals (there can only be one)
-    remove_duplicates(es_client, opts['index'])
+    scroll_domains_docs(es_client, opts['index'], '')
+    # highlander the hashvals (there can only be one)
+    # remove_duplicates(es_client, opts['index'])

@@ -7,7 +7,7 @@ import os
 
 if __name__ == '__main__':
     mapping_path = 'mapping.json'
-    index = 'gatest'
+    index = 'testv1'
     mapping = open(mapping_path).read()
     con_opts = {
         'ax_key': os.getenv('AWS_AX_KEY'),
@@ -22,5 +22,6 @@ if __name__ == '__main__':
     print('Target {}'.format(index))
     result = es_client.indices.delete(index=index, ignore=[400, 404])
     result = es_client.indices.create(index=index, ignore=400, body=mapping)
+    #es_client.indices.create(index=index, ignore=400)
     print(result)
     print('..done.')

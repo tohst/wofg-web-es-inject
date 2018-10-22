@@ -3,6 +3,8 @@
 		"_doc": { 
             "date_detection": false,
 	        "properties": { 
+				"DOCURL":{"type":"keyword" },
+				"PATH":{"type":"keyword"},
 				"HOST": { "type":"keyword" },
 				"PORTFOLIO": { "type":"keyword" },
 				"REPORT_ID": { "type":"date" },
@@ -194,7 +196,10 @@
                 "m_x-dta-detected-lang": { "type":"keyword"},
                 "m_x-funnelback-twitter-hash-tags":{"type":"keyword"},
                 "m_x-funnelback-twitter-user-tags":{"type":"keyword"},
-				"mh_content-language": { "type":"keyword" }
+				"mh_content-language": { "type":"keyword" },
+				"m_x-funnelback-contains-mixed-content": { "type" : "text" },
+				"m_x-funnelback-feed-type": { "type" : "keyword" },
+				"m_x-funnelback-feed-version":{ "type" : "keyword" }
 	    	}
 	    }
 	}

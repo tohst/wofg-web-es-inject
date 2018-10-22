@@ -16,7 +16,7 @@ from auth import connect
 
 
 opts = {
-    'index': 'gatest',
+    'index': 'testv1',
     'type': '_doc',
     'with_retry': True,
     'timeout': 30,
@@ -136,7 +136,7 @@ def _json(opts, json_data_dir, es):
 
 
 if __name__ == '__main__':
-    json_dir = 'dtadata/gatest/'
+    json_dir = '/Users/jgriffithshawking/dtajson/' #'/Users/jgriffithshawking/dtajson/'
     con_opts = {
         'ax_key': os.getenv('AWS_AX_KEY'),
         'sec_key': os.getenv('AWS_SEC_KEY'),
